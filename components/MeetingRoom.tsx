@@ -133,7 +133,7 @@ const MeetingRoom = () => {
 
         <DropdownMenu>
           <div className="flex items-center">
-            <DropdownMenuTrigger className="cursor-pointer rounded-2xl bg-[#19232d] px-4 py-2 hover:bg-[#4c535b]  ">
+            <DropdownMenuTrigger className="cursor-pointer rounded-2xl bg-[#19232d] px-4 py-2 hover:bg-[#4c535b] hidden ">
               <LayoutList size={20} className="text-white" />
             </DropdownMenuTrigger>
           </div>
@@ -157,7 +157,7 @@ const MeetingRoom = () => {
 
           <Modal />
           <Chat roomId={roomID as string} />
-        {!isPersonalRoom && <EndCallButton />}
+          {!isPersonalRoom && <EndCallButton />}
         </div>
       </div>
       {/* <div className='absolute bottom-20 left-[18%] bg-gray-500 text-black p-2 rounded-lg text-sm'>
