@@ -26,10 +26,7 @@ interface MeetingSetupProps {
   setCountries: (value: Country[]) => void;
 }
 
-const MeetingSetup = ({
-  setIsSetupComplete,
-  countries,
-}: MeetingSetupProps) => {
+const MeetingSetup = ({ setIsSetupComplete, countries }: MeetingSetupProps) => {
   const { user, isUserLoggedIn } = useContext(authContext);
   const [selectedLanguage, setSelectedLanguage] = useState<string | null>(null);
 
@@ -43,34 +40,38 @@ const MeetingSetup = ({
   const call = useCall();
   const { displayName, setDisplayName } = useContext(DisplayNameContext);
   const [localDisplayName, setLocalDisplayName] = useState(displayName || '');
-  const params = useParams()
+  const params = useParams();
   const handleInputChange = (text: string) => {
     setLocalDisplayName(text);
-    setDisplayName(text);  // Update the context value
+    setDisplayName(text); // Update the context value
   };
 
-
   const saveUserToRealtimeDatabase = async () => {
+    console.log('cehckkk2323', params.id && user && localDisplayName);
     if (params.id && user && localDisplayName) {
       try {
-        await set(ref(database, `meetings/${params.id}/participants/${user.id}`), {
-          displayName: localDisplayName,
-          userId: user.id,
-        });
+        await set(
+          ref(database, `meetings/${params.id}/participants/${user.id}`),
+          {
+            displayName: localDisplayName,
+            userId: user.id,
+          },
+        );
       } catch (error) {
-        console.error("Error saving user to Realtime Database:", error);
+        console.error('Error saving user to Realtime Database:', error);
       }
     }
   };
 
   useEffect(() => {
-    const videoDisabledDiv = document.querySelector('.str_video__video-preview__disabled-video-preview');
+    const videoDisabledDiv = document.querySelector(
+      '.str_video__video-preview__disabled-video-preview',
+    );
 
     if (videoDisabledDiv) {
       videoDisabledDiv.textContent = 'Camera is off';
     }
   }); // Run on component mount
-
 
   useEffect(() => {
     if (selectedLanguage) {
@@ -94,6 +95,19 @@ const MeetingSetup = ({
       call.camera.enable();
       call.microphone.enable();
     }
+    console.log(
+      'cehckkkk566',
+      localStorage.getItem('display-name'),
+      !localStorage.getItem('newmeeting'),
+    );
+    if (
+      localStorage.getItem('display-name') &&
+      !localStorage.getItem('newmeeting')
+    ) {
+      saveUserToRealtimeDatabase(); // Save user info to Realtime Database
+      call.join();
+      setIsSetupComplete(true);
+    }
   }, [isMicCamToggled, call.camera, call.microphone]);
 
   if (callTimeNotArrived)
@@ -111,18 +125,23 @@ const MeetingSetup = ({
       />
     );
 
-
   // Custom options for react-select
   const countryOptions = countries.map((country, index) => ({
     value: country.languages[0],
     label: (
       <div className="flex items-center">
-        <img src={country.flag} alt="flag" className="inline-block mr-2 w-6 h-4" />
+        <img
+          src={country.flag}
+          alt="flag"
+          className="inline-block mr-2 w-6 h-4"
+        />
         {country.languages[0]}
       </div>
     ),
   }));
-  const mongolianOption = countryOptions.find(option => option.value === 'Mongolian');
+  const mongolianOption = countryOptions.find(
+    (option) => option.value === 'Mongolian',
+  );
 
   return (
     <div className="flex h-screen w-full flex-col items-center justify-center gap-3 text-white">
@@ -150,19 +169,21 @@ const MeetingSetup = ({
               user.isAnonymous ? displayName : user.name,
             );
 
-            await saveUserToRealtimeDatabase();  // Save user info to Realtime Database
+            await saveUserToRealtimeDatabase(); // Save user info to Realtime Database
             call.join();
             setIsSetupComplete(true);
+            localStorage.removeItem('newmeeting');
           }}
         >
           Join meeting
         </Button>
 
         <div className="w-64">
-
           <Select
             options={countryOptions}
-            onChange={(option: SingleValue<{ value: string }>) => setSelectedLanguage(option?.value || '')}
+            onChange={(option: SingleValue<{ value: string }>) =>
+              setSelectedLanguage(option?.value || '')
+            }
             className="text-black"
             defaultValue={mongolianOption} // Set Mongolian as the default
           />
@@ -173,7 +194,7 @@ const MeetingSetup = ({
             className="text-black text-sm p-2 rounded-lg border"
             type="text"
             placeholder="Your Name"
-            value={localDisplayName}  // Set the value to the local display name
+            value={localDisplayName} // Set the value to the local display name
             onChange={(e) => handleInputChange(e.target.value)}
           />
         )}

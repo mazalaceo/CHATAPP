@@ -24,7 +24,7 @@ import { useGetCallById } from '@/hooks/useGetCallById';
  ** ** ** Page [MeetingPage]
  ** ** ===============================================================================
  */
-
+const username = localStorage.getItem('display-name');
 const initialCountries = [
   {
     flag: 'https://flagcdn.com/w320/gb.png', // United Kingdom flag (for English)
@@ -245,16 +245,18 @@ const MeetingPage = () => {
   if (notAllowed)
     return <Alert title="You are not allowed to join this meeting" />;
 
-
-
   return (
     <main className="h-screen w-full">
       <StreamCall call={call}>
         <StreamTheme>
-          {!isSetupComplete ? (
-            <MeetingSetup setIsSetupComplete={setIsSetupComplete} countries={countries} setCountries={setCountries} />
-          ) : (
+          {isSetupComplete ? (
             <MeetingRoom />
+          ) : (
+            <MeetingSetup
+              setIsSetupComplete={setIsSetupComplete}
+              countries={countries}
+              setCountries={setCountries}
+            />
           )}
         </StreamTheme>
       </StreamCall>

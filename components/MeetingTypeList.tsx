@@ -66,6 +66,7 @@ const MeetingTypeList = () => {
       if (!values.description) {
         router.push(`/meeting/${call.id}`);
       }
+      localStorage.setItem('newmeeting', 'yes');
       toast({
         title: 'Meeting Created',
       });
@@ -118,7 +119,6 @@ const MeetingTypeList = () => {
         img="/icons/add-meeting.svg"
         handleClick={createMeeting}
       />
-
     </section>
   );
 };
