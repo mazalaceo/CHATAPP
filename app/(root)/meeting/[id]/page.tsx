@@ -24,7 +24,7 @@ import { useGetCallById } from '@/hooks/useGetCallById';
  ** ** ** Page [MeetingPage]
  ** ** ===============================================================================
  */
-const username = localStorage.getItem('display-name');
+// const username = localStorage.getItem('display-name');
 const initialCountries = [
   {
     flag: 'https://flagcdn.com/w320/gb.png', // United Kingdom flag (for English)
